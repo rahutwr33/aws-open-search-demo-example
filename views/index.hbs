@@ -1,0 +1,150 @@
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AWS OpenSearch Example</title>
+  <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+  <style>
+    body {
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      flex-direction: column;
+    }
+
+    .mid {
+      display: flex;
+      justify-content: center;
+    }
+
+    .inputsize {
+      width: 250px;
+      height: 30px;
+    }
+
+    #nodata {
+      display: flex;
+      justify-content: center;
+      margin-top: 50px;
+    }
+
+    #loading {
+      display: flex;
+      justify-content: center;
+      margin-top: 50px;
+    }
+
+    ul {
+      justify-content: center;
+      display: flex;
+      width: 100%;
+      flex-direction: column;
+    }
+
+    li {
+      justify-content: center;
+      display: flex;
+      width: 100%;
+      margin-top: 50px;
+    }
+
+    .text-highlight {
+      background: yellow;
+      display: flex;
+      justify-content: center;
+      border-radius: 2px;
+      padding: 0 2px;
+      border: 1px solid var(--dark-blue-color);
+    }
+
+    .movieslist {
+      display: flex;
+      justify-content: center;
+      margin-top: 20px;
+    }
+
+    .metadata {
+      display: flex;
+      flex-direction: column;
+      margin-left: 41%;
+      margin-top: 20px;
+      font-size: 14px;
+    }
+  </style>
+
+</head>
+
+<body>
+  <div class="mid">
+    <h1>Search Movies</h1>
+  </div>
+  <div class="mid">
+    <input class="inputsize" type="text" id="input" placeholder="Search Movies" />
+  </div>
+  <div class="metadata">
+    <div id="timetaken"></div>
+    <div id="count"></div>
+  </div>
+  <div id="movieslist"></div>
+  <div id="nodata" style="display:none">
+    No Movies Found
+  </div>
+  <div id="loading" style="display:none">
+    Loading...
+  </div>
+
+  <script>
+    function debounce(func, delay) {
+      let debounceTimer
+      return function () {
+        const context = this
+        const args = arguments
+        clearTimeout(debounceTimer)
+        debounceTimer
+          = setTimeout(() => func.apply(context, args), delay)
+      }
+    }
+    async function fetchRecord(val) {
+      try {
+        const rawResponse = await
+          fetch(`http://localhost:3000/search?keyword=${val}`, {
+            method: 'GET', headers: {
+              'Accept': 'application/json', 'Content-Type': 'application/json'
+            }
+          });
+        const response = await rawResponse.json();
+        return {
+          data: response.data.transformrecord,
+          time: response.data.timeTaken,
+          count: response.data.totalRecord
+        }
+      } catch (error) {
+        console.log("error", error.response.data)
+        return error.response.data
+      }
+    }
+    $('.inputsize').on('keyup', debounce(async function (e) {
+      const { data, time, count } = await fetchRecord(e.target.value);
+      if (data && !data?.length) {
+        document.getElementById('movieslist').style.display = 'none'
+        document.getElementById('nodata').style.display = 'flex'
+      } else {
+        document.getElementById('nodata').style.display = 'none'
+        document.getElementById('movieslist').style.display = 'flex'
+        let html = '<ul>';
+        let htmlEnd = '</ul>';
+        data.forEach(cv => {
+          html = `${html}<li>${cv.title} ${cv.genres}</li>`
+        })
+        html = html + htmlEnd
+        document.getElementById('movieslist').innerHTML = html
+      }
+      document.getElementById('timetaken').innerHTML = `Time Taken: ${time}ms`
+      document.getElementById('count').innerHTML = `Total Record: ${count}`
+    }, 500));
+  </script>
+</body>
+
+</html>
