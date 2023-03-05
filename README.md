@@ -5,7 +5,9 @@ A Simple Example of movies searching through AWS opensearch express mustache js.
 Env variable needed 
 
 ESNODE= https://{url}.{region}.es.amazonaws.com 
+
 USERNAME= wdawdawdawd
+
 PASSWORD=wdawjdgakwjd
 
 
