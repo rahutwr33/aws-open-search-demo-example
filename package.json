@@ -4,9 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "build": "rimraf dist && babel src --out-dir dist  --copy-files",
-    "live": "node dist/app.js",
-    "start": "nodemon --exec babel-node index.js"
+    "build": "rimraf dist && babel app --out-dir dist  --copy-files",
+    "live": "node dist/index.js",
+    "start": "nodemon --exec babel-node app/index.js"
   },
   "keywords": [],
   "author": "",

@@ -22,7 +22,7 @@ const transformRecord = (record,keyword) =>{
     record.forEach(val => {
         finalString.push({
           title: searchTextHL.highlight(val.title, keyword),
-          genres: searchTextHL.highlight(val.genres.replaceAll('|', ' '), keyword)
+          genres: searchTextHL.highlight(val.genres.replace(/|/g, ' '), keyword)
         })
     });
     return finalString

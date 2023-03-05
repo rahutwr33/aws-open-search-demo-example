@@ -1,7 +1,7 @@
 import express, { json } from "express";
 import path from "path";
 import cookieParser from "cookie-parser";
-import { searchMovies } from "./app/main";
+import { searchMovies } from "./main";
 import * as dotenv from 'dotenv'
 dotenv.config()
 const app = express();
@@ -29,6 +29,7 @@ app.get("/search", async (req, res) => {
           res.status(200).json({ data: searchMovie });
       }
     } catch (error) {
+      console.log('error', error)
       res.status(400).json({ data: [] });
     }
   });
