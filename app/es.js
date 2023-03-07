@@ -4,7 +4,7 @@ const searchMovie = async (keyword) => {
   try {
     const query = {
       query: {
-        match: {
+        match_phrase_prefix: {
           title: keyword
         },
       },
